@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="kor">
+<body>
+<div id="root"></div>
+</body>
+<script src="https://unpkg.com/react@17.0.2/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
+    // React.createContext() <- 컴포넌트간 값 전달에 사용. 전역 변수로 사용.
+
+    function Btn({btnName, changeValue}){
+        console.log(btnName + "has Rendered");
+        return (
+            <button
+                onClick={changeValue}
+                style={{
+                    backgroundColor: "tomato",
+                    color: "white",
+                    padding: "10px, 20px",
+                    border : 0,
+                    borderRadius: 10,
+                }}
+            > {btnName} </button>
+        )
+    }
+    const MemorizedBtn = React.memo(Btn);
+    function App() {
+        const [value, setValue] = React.useState("save changes");
+        const changeValue = () => setValue("revert changes");
+        return (
+            <div>
+                <MemorizedBtn btnName={value} changeValue={changeValue} />
+                <MemorizedBtn btnName="apple" />
+                <!--<Btn btnName={value} changeValue={changeValue} /> -->
+                <!--<Btn btnName="apple"  /> -->
+            </div>
+        )
+    }
+
+    /*
+    setValue로 상태를 바꾸면 모든 자식들이 새로 랜더링됨.
+    주석처리된 <Btn/> 보면 맨 위만 changeValue로 porps의 값을 바꾸면하단의 apple 버튼도 싹 다 랜더링 됨. -> 애플리케이션이 느려지는 원인 이 됨.
+    props가 안바뀌는 애들은 React.Memo()를 이용해 reRendering 않게 고정할 필요가 있음.
+     */
+
+    const root = document.getElementById('root');
+    ReactDOM.render(<App/>, root)
+</script>
+</html>
